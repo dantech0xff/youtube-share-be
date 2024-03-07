@@ -1,5 +1,6 @@
 import { MongoClient, Db, Collection } from 'mongodb'
 import { appEnvConfig } from '~/constants/envConfig'
+import User from '~/models/db-schemas/User.schema'
 
 const dbConnectionUrl = `mongodb+srv://${appEnvConfig.mongoDbUserName}:${appEnvConfig.mongoDbUserPassword}@db001.kcqryme.mongodb.net/?retryWrites=true&w=majority&appName=db001`
 console.log(dbConnectionUrl)
@@ -21,6 +22,17 @@ class DatabaseService {
     } catch (error) {
       console.error('Error connecting to MongoDB', error)
     }
+  }
+
+  get users(): Collection<User> {
+    return this.db.collection<User>('users')
+  }
+
+  async createIndexUsers() {
+    const indexExists = await this.users.listIndexes().toArray()
+    if (indexExists.length > 1) return
+    await this.users.createIndex({ email: 1 }, { unique: true })
+    await this.users.createIndex({ username: 1 }, { unique: true })
   }
 }
 
