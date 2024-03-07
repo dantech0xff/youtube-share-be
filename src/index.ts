@@ -1,13 +1,14 @@
 import express from 'express'
-import dotenv from 'dotenv'
-
-dotenv.config()
+import databaseService from './services/database.service'
+import { appEnvConfig } from './constants/envConfig'
 
 const app = express()
+
+databaseService.connect().catch(console.error)
 
 app.get('/', (req, res) => {
   res.send('Hello RENEC!')
 })
-app.listen(process.env.PORT, () => {
-  console.log(`Server is running at http://localhost:${process.env.PORT}`)
+app.listen(appEnvConfig.port, () => {
+  console.log(`Server is running at http://localhost:${appEnvConfig.port}`)
 })
