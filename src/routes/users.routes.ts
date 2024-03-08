@@ -44,6 +44,7 @@ usersRouter.post('/login', userLoginValidator, defaultRequestHandler(loginUserCo
  * Return: { data: { success: true } message: string }
  */
 usersRouter.post('/logout', userAccessTokenValidator, (req, res) => {
+  // TODO: Implement logout later, now user want to logout? just delete their token from client side
   res.status(200).json({ message: 'User logged out successfully!' })
 })
 
