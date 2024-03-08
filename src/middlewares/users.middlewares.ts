@@ -96,3 +96,44 @@ export const userAccessTokenValidator = requestValidator(
     ['headers']
   )
 )
+
+export const userChangePasswordValidator = requestValidator(
+  checkSchema({
+    old_password: {
+      notEmpty: {
+        errorMessage: 'Old password is required!'
+      },
+      isString: {
+        errorMessage: 'Old password must be a string!'
+      }
+    },
+    new_password: {
+      notEmpty: {
+        errorMessage: 'New password is required!'
+      },
+      isString: {
+        errorMessage: 'New password must be a string!'
+      },
+      isLength: {
+        errorMessage: 'New password must be at least 6 chars long!',
+        options: { min: 6 }
+      }
+    },
+    confirm_new_password: {
+      notEmpty: {
+        errorMessage: 'Confirm new password is required!'
+      },
+      isString: {
+        errorMessage: 'Confirm new password must be a string!'
+      },
+      custom: {
+        options: (value, { req }) => {
+          if (value !== req.body.new_password) {
+            throw new Error('Confirm new password does not match new password!')
+          }
+          return true
+        }
+      }
+    }
+  })
+)

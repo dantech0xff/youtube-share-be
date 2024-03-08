@@ -1,11 +1,19 @@
 import { Router } from 'express'
 import {
+  changePasswordController,
+  followUserByIdController,
   getMyProfileController,
   getUserProfileByIdController,
   loginUserController,
-  registerUserController
+  registerUserController,
+  unFollowUserByIdController
 } from '~/controllers/users.controller'
-import { userAccessTokenValidator, userLoginValidator, userRegisterValidator } from '~/middlewares/users.middlewares'
+import {
+  userAccessTokenValidator,
+  userChangePasswordValidator,
+  userLoginValidator,
+  userRegisterValidator
+} from '~/middlewares/users.middlewares'
 import { defaultRequestHandler } from '~/utils/defaultRequestHandler'
 
 const usersRouter = Router()
@@ -15,7 +23,7 @@ const usersRouter = Router()
  * Method: POST
  * Path: /users/register
  * Body: { username: string, email: string, password: string }
- * Return: { data : { user_id: string, email: string, accessToken: string }, message: string }
+ * Return: { data : { user_id: string, email: string, access_token: string }, message: string }
  */
 usersRouter.post('/register', userRegisterValidator, defaultRequestHandler(registerUserController))
 
@@ -24,7 +32,7 @@ usersRouter.post('/register', userRegisterValidator, defaultRequestHandler(regis
  * Method: POST
  * Path: /users/login
  * Body: { email: string, password: string }
- * Return: 200 { data : { user_id: string, email: string, accessToken: string }, message: string }
+ * Return: 200 { data : { user_id: string, email: string, access_token: string }, message: string }
  */
 usersRouter.post('/login', userLoginValidator, defaultRequestHandler(loginUserController))
 
@@ -43,6 +51,7 @@ usersRouter.post('/logout', userAccessTokenValidator, (req, res) => {
  * Description: Get my profile
  * Method: GET
  * Path: /users/me
+ * Headers: { Authorization: Bearer <accessToken> }
  * Return: { data: { user_id: string, email: string, username: string, create_at: ISO8601, update_at: ISO8601 }, message: string }
  */
 usersRouter.get('/me', userAccessTokenValidator, defaultRequestHandler(getMyProfileController))
@@ -51,20 +60,44 @@ usersRouter.get('/me', userAccessTokenValidator, defaultRequestHandler(getMyProf
  * Description: Get user profile by id
  * Method: GET
  * Path: /users/:user_id
+ * Headers: { Authorization: Bearer <accessToken> }
  * Return: { data: { user_id: string, email: string, username: string, create_at: ISO8601, update_at: ISO8601 }, message: string }
  */
 usersRouter.get('/:user_id', userAccessTokenValidator, defaultRequestHandler(getUserProfileByIdController))
 
-usersRouter.post('/follow', (req, res) => {
-  res.status(200).json({ message: `User followed successfully ${req.body}` })
-})
+/**
+ * Description: Follow user
+ * Method: POST
+ * Path: /users/follow
+ * Body: { user_id: string }
+ * Headers: { Authorization: Bearer <accessToken> }
+ * Return: { data: { user_id: string, follower_id: string, message: string }, message: string }
+ */
+usersRouter.post('/follow', userAccessTokenValidator, defaultRequestHandler(followUserByIdController))
 
-usersRouter.post('/unfollow', (req, res) => {
-  res.status(200).json({ message: `User unfollow successfully ${req.body}` })
-})
+/**
+ * Description: Unfollow user
+ * Method: POST
+ * Path: /users/unfollow
+ * Body: { user_id: string }
+ * Headers: { Authorization: Bearer <accessToken> }
+ * Return: { data: { user_id: string, follower_id: string, message: string }, message: string }
+ */
+usersRouter.post('/unfollow', userAccessTokenValidator, defaultRequestHandler(unFollowUserByIdController))
 
-usersRouter.post('/change-password', (req, res) => {
-  res.status(404).json({ message: `User change password successfully ${req.body}` })
-})
+/**
+ * Description: Change password
+ * Method: POST
+ * Path: /users/change-password
+ * Body: { old_password: string, new_password: string, confirm_new_password: string}
+ * Headers: { Authorization: Bearer <accessToken> }
+ * Return: { data: { user_id: string, email: string, access_token: string }, message: string }
+ */
+usersRouter.post(
+  '/change-password',
+  userAccessTokenValidator,
+  userChangePasswordValidator,
+  defaultRequestHandler(changePasswordController)
+)
 
 export default usersRouter

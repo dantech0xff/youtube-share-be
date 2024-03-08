@@ -1,5 +1,6 @@
 import { MongoClient, Db, Collection } from 'mongodb'
 import { appEnvConfig } from '~/constants/envConfig'
+import Follower from '~/models/db-schemas/Follower.schema'
 import User from '~/models/db-schemas/User.schema'
 
 const dbConnectionUrl = `mongodb+srv://${appEnvConfig.mongoDbUserName}:${appEnvConfig.mongoDbUserPassword}@db001.kcqryme.mongodb.net/?retryWrites=true&w=majority&appName=db001`
@@ -26,6 +27,10 @@ class DatabaseService {
 
   get users(): Collection<User> {
     return this.db.collection<User>('users')
+  }
+
+  get followers(): Collection<Follower> {
+    return this.db.collection<Follower>('followers')
   }
 
   async createIndexUsers() {

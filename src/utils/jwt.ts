@@ -1,4 +1,3 @@
-import { sign } from 'crypto'
 import jwt, { SignOptions, VerifyOptions } from 'jsonwebtoken'
 
 export const signToken = ({
