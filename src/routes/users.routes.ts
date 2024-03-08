@@ -1,6 +1,6 @@
 import { Router } from 'express'
-import { registerUserController } from '~/controllers/users.controller'
-import { userRegisterValidator } from '~/middlewares/users.middlewares'
+import { loginUserController, registerUserController } from '~/controllers/users.controller'
+import { userLoginValidator, userRegisterValidator } from '~/middlewares/users.middlewares'
 import { defaultRequestHandler } from '~/utils/defaultRequestHandler'
 
 const usersRouter = Router()
@@ -10,13 +10,26 @@ const usersRouter = Router()
  * Method: POST
  * Path: /users/register
  * Body: { username: string, email: string, password: string }
+ * Return: 200 { data : { user_id: string, email: string, accessToken: string }, message: string }
  */
 usersRouter.post('/register', userRegisterValidator, defaultRequestHandler(registerUserController))
 
-usersRouter.post('/login', (req, res) => {
-  res.status(200).json({ message: 'User logged in successfully' })
-})
+/**
+ * Description: Login user
+ * Method: POST
+ * Path: /users/login
+ * Body: { email: string, password: string }
+ * Return: 200 { data : { user_id: string, email: string, accessToken: string }, message: string }
+ */
+usersRouter.post('/login', userLoginValidator, defaultRequestHandler(loginUserController))
 
+/**
+ * Description: Logout user
+ * Method: POST
+ * Path: /users/logout
+ * Headers: { Authorization: Bearer <accessToken> }
+ * Return: 200 { data: { success: true } message: string }
+ */
 usersRouter.post('/logout', (req, res) => {
   res.status(200).json({ message: 'User logged out successfully' })
 })
