@@ -1,7 +1,7 @@
 import { HTTP_CODES } from '~/constants/HTTP_CODES'
 import userServices from '~/services/users.service'
 import { hashPassword } from '~/utils/cryptography'
-import { signToken } from '~/utils/jwt'
+
 export const registerUserController = async (req: any, res: any, next: any) => {
   const registerResult = await userServices.registerUser(req.body)
   const user_id = registerResult.user_id

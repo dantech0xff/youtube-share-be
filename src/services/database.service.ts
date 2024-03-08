@@ -1,7 +1,9 @@
 import { MongoClient, Db, Collection } from 'mongodb'
 import { appEnvConfig } from '~/constants/envConfig'
 import Follower from '~/models/db-schemas/Follower.schema'
+import Interaction from '~/models/db-schemas/Interaction.schema'
 import User from '~/models/db-schemas/User.schema'
+import Video from '~/models/db-schemas/Video.schema'
 
 const dbConnectionUrl = `mongodb+srv://${appEnvConfig.mongoDbUserName}:${appEnvConfig.mongoDbUserPassword}@db001.kcqryme.mongodb.net/?retryWrites=true&w=majority&appName=db001`
 console.log(dbConnectionUrl)
@@ -31,6 +33,14 @@ class DatabaseService {
 
   get followers(): Collection<Follower> {
     return this.db.collection<Follower>('followers')
+  }
+
+  get videos(): Collection<Video> {
+    return this.db.collection<Video>('videos')
+  }
+
+  get interactions(): Collection<Interaction> {
+    return this.db.collection<Interaction>('interactions')
   }
 
   async createIndexUsers() {

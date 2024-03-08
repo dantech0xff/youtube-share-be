@@ -3,6 +3,7 @@ import databaseService from './services/database.service'
 import { appEnvConfig } from './constants/envConfig'
 import usersRouter from './routes/users.routes'
 import { HTTP_CODES } from './constants/HTTP_CODES'
+import videosRouter from './routes/videos.routes'
 const app = express()
 
 databaseService
@@ -16,6 +17,7 @@ app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 app.use('/users', usersRouter)
+app.use('/videos', videosRouter)
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   // Temporary error handling
