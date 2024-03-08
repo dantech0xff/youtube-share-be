@@ -1,7 +1,9 @@
 import { checkSchema } from 'express-validator'
+import { appEnvConfig } from '~/constants/envConfig'
 import userServices from '~/services/users.service'
 import { requestValidator } from '~/utils/RequestValidator'
 import { hashPassword } from '~/utils/cryptography'
+import { verifyToken } from '~/utils/jwt'
 export const userRegisterValidator = requestValidator(
   checkSchema({
     email: {
@@ -66,4 +68,31 @@ export const userLoginValidator = requestValidator(
       }
     }
   })
+)
+
+export const userAccessTokenValidator = requestValidator(
+  checkSchema(
+    {
+      Authorization: {
+        notEmpty: {
+          errorMessage: 'Access token is required!'
+        },
+        isString: {
+          errorMessage: 'Access token must be a string!'
+        },
+        custom: {
+          options: async (value: string, { req }) => {
+            const access_token = (value || '').split(' ')[1]
+            const decoded_token = await verifyToken({
+              token: access_token,
+              secretOrPublicKey: appEnvConfig.jwtAccessSecret
+            })
+            req.tokenPayload = decoded_token
+            return true
+          }
+        }
+      }
+    },
+    ['headers']
+  )
 )

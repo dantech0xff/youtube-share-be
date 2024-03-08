@@ -1,6 +1,11 @@
 import { Router } from 'express'
-import { loginUserController, registerUserController } from '~/controllers/users.controller'
-import { userLoginValidator, userRegisterValidator } from '~/middlewares/users.middlewares'
+import {
+  getMyProfileController,
+  getUserProfileByIdController,
+  loginUserController,
+  registerUserController
+} from '~/controllers/users.controller'
+import { userAccessTokenValidator, userLoginValidator, userRegisterValidator } from '~/middlewares/users.middlewares'
 import { defaultRequestHandler } from '~/utils/defaultRequestHandler'
 
 const usersRouter = Router()
@@ -10,7 +15,7 @@ const usersRouter = Router()
  * Method: POST
  * Path: /users/register
  * Body: { username: string, email: string, password: string }
- * Return: 200 { data : { user_id: string, email: string, accessToken: string }, message: string }
+ * Return: { data : { user_id: string, email: string, accessToken: string }, message: string }
  */
 usersRouter.post('/register', userRegisterValidator, defaultRequestHandler(registerUserController))
 
@@ -28,19 +33,27 @@ usersRouter.post('/login', userLoginValidator, defaultRequestHandler(loginUserCo
  * Method: POST
  * Path: /users/logout
  * Headers: { Authorization: Bearer <accessToken> }
- * Return: 200 { data: { success: true } message: string }
+ * Return: { data: { success: true } message: string }
  */
-usersRouter.post('/logout', (req, res) => {
-  res.status(200).json({ message: 'User logged out successfully' })
+usersRouter.post('/logout', userAccessTokenValidator, (req, res) => {
+  res.status(200).json({ message: 'User logged out successfully!' })
 })
 
-usersRouter.get('/me', (req, res) => {
-  res.status(200).json({ message: 'My profile' })
-})
+/**
+ * Description: Get my profile
+ * Method: GET
+ * Path: /users/me
+ * Return: { data: { user_id: string, email: string, username: string, create_at: ISO8601, update_at: ISO8601 }, message: string }
+ */
+usersRouter.get('/me', userAccessTokenValidator, defaultRequestHandler(getMyProfileController))
 
-usersRouter.get('/:user_id', (req, res) => {
-  res.status(200).json({ message: `User profile by id ${req.params}` })
-})
+/**
+ * Description: Get user profile by id
+ * Method: GET
+ * Path: /users/:user_id
+ * Return: { data: { user_id: string, email: string, username: string, create_at: ISO8601, update_at: ISO8601 }, message: string }
+ */
+usersRouter.get('/:user_id', userAccessTokenValidator, defaultRequestHandler(getUserProfileByIdController))
 
 usersRouter.post('/follow', (req, res) => {
   res.status(200).json({ message: `User followed successfully ${req.body}` })
