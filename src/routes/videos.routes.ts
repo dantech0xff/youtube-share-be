@@ -19,7 +19,7 @@ const videosRouter = Router()
  * Path: /videos/share
  * Body: { url: string, title: string, description: string }
  * Headers: { Authorization: Bearer <accessToken> }
- * Return: { data: { video_id: string } }
+ * Return: { data: { _id: string, user_id:string, url:string, title: string, description: string, views: number, create_at: ISO8601, update_at: ISO8601 } }
  */
 videosRouter.post(
   '/share',

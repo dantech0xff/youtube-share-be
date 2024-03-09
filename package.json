@@ -24,7 +24,8 @@
     "express-validator": "^7.0.1",
     "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
-    "mongodb": "^6.4.0"
+    "mongodb": "^6.4.0",
+    "socket.io": "^4.7.4"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
@@ -43,5 +44,9 @@
     "tsc-alias": "^1.8.8",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.4.2"
+  },
+  "optionalDependencies": {
+    "bufferutil": "^4.0.8",
+    "utf-8-validate": "^5.0.10"
   }
 }

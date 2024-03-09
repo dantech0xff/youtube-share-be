@@ -1,7 +1,9 @@
 import { HTTP_CODES } from '~/constants/HTTP_CODES'
 import { ApiResponseMessage } from '~/constants/Messages'
 import { InteractionActionType } from '~/models/db-schemas/Interaction.schema'
+import Video from '~/models/db-schemas/Video.schema'
 import videoService from '~/services/videos.service'
+import socketService from '~/socket/SocketService'
 
 export const userUploadVideoController = async (req: any, res: any, next: any) => {
   const user_id = req.tokenPayload.user_id
@@ -12,6 +14,7 @@ export const userUploadVideoController = async (req: any, res: any, next: any) =
     title,
     description
   })
+  socketService.notifyNewVideoSharedByUserId({ data: new Video(data) })
   return res.status(HTTP_CODES.CREATED).json({ data, message: ApiResponseMessage.VIDEO_SHARED })
 }
 

@@ -8,6 +8,9 @@ import helmet from 'helmet'
 import rateLimit from 'express-rate-limit'
 import { ApiResponseMessage } from './constants/Messages'
 import cors from 'cors'
+import { createServer } from 'http'
+import { Server } from 'socket.io'
+import socketService from './socket/SocketService'
 
 databaseService
   .connect()
@@ -45,6 +48,8 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   res.status(HTTP_CODES.FORBIDDEN).json({ message: 'Something happened!', error: `${err}` })
 })
 
-app.listen(appEnvConfig.port, () => {
-  console.log(`Server is running at http://localhost:${appEnvConfig.port}`)
+socketService.initSocket(app)
+const port = parseInt(appEnvConfig.port as string) || 3000
+socketService.listen(port, () => {
+  console.log(`Server is running at http://localhost:${port}`)
 })

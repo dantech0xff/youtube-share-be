@@ -6,13 +6,9 @@ import { ApiResponseMessage } from '~/constants/Messages'
 
 class VideoService {
   async uploadVideo(input: { user_id: string; url: string; title: string; description: string }) {
-    const insertResult = await databaseService.videos.insertOne(
-      new Video({
-        ...input,
-        user_id: new ObjectId(input.user_id)
-      })
-    )
-    return { video_id: insertResult.insertedId }
+    const insertObject = new Video({ ...input, user_id: new ObjectId(input.user_id) })
+    await databaseService.videos.insertOne(insertObject)
+    return { ...insertObject }
   }
 
   async deleteVideo(input: { video_id: string; user_id: string }) {

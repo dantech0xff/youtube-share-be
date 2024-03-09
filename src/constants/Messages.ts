@@ -43,5 +43,6 @@ export const ApiResponseMessage = {
   MY_PROFILE: 'My Profile',
   REQUEST_HANDLE_SUCCESSFULLY: 'Request handle successfully!',
   PASSWORD_CHANGED_SUCCESSFULLY: 'Password changed successfully!',
-  TOO_MANY_REQUESTS: 'Too many requests, please try again after 15 minutes!'
+  TOO_MANY_REQUESTS: 'Too many requests, please try again after 15 minutes!',
+  AUTHENTICATION_ERROR: 'Authentication error!'
 }

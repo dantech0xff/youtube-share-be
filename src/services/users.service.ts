@@ -101,6 +101,14 @@ class UserService {
     }
     return { user_id: input.user_id, follower_id: input.follower_id, message }
   }
+
+  async getListOfFollowersByUserId(user_id: string) {
+    const followers = await databaseService.followers
+      .find({ user_id: new ObjectId(user_id) })
+      .map((follower) => follower.follower_id.toString())
+      .toArray()
+    return followers
+  }
 }
 
 const userServices = new UserService()

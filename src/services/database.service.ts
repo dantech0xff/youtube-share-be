@@ -2,6 +2,7 @@ import { MongoClient, Db, Collection } from 'mongodb'
 import { appEnvConfig } from '~/constants/envConfig'
 import Follower from '~/models/db-schemas/Follower.schema'
 import Interaction from '~/models/db-schemas/Interaction.schema'
+import AppNotification from '~/models/db-schemas/Notification.schema'
 import User from '~/models/db-schemas/User.schema'
 import Video from '~/models/db-schemas/Video.schema'
 
@@ -41,6 +42,10 @@ class DatabaseService {
 
   get interactions(): Collection<Interaction> {
     return this.db.collection<Interaction>('interactions')
+  }
+
+  get notifications(): Collection<AppNotification> {
+    return this.db.collection<AppNotification>('notifications')
   }
 
   async createIndexUsers() {
