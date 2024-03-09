@@ -1,21 +1,23 @@
 import { checkSchema } from 'express-validator'
+import { ApiResponseMessage, minPasswordLength } from '~/constants/Messages'
 import { appEnvConfig } from '~/constants/envConfig'
 import userServices from '~/services/users.service'
 import { requestValidator } from '~/utils/RequestValidator'
 import { hashPassword } from '~/utils/cryptography'
 import { verifyToken } from '~/utils/jwt'
+
 export const userRegisterValidator = requestValidator(
   checkSchema({
     email: {
       isEmail: {
-        errorMessage: 'Invalid email!'
+        errorMessage: ApiResponseMessage.INVALID_EMAIl
       },
       trim: true,
       custom: {
         options: async (value) => {
           const isExisted = await userServices.isEmailExisted(value)
           if (isExisted) {
-            throw new Error('Email already existed!')
+            throw new Error(ApiResponseMessage.USER_ALREADY_EXISTS)
           }
           return true
         }
@@ -23,14 +25,14 @@ export const userRegisterValidator = requestValidator(
     },
     password: {
       notEmpty: {
-        errorMessage: 'Password is required!'
+        errorMessage: ApiResponseMessage.PASSWORD_IS_REQUIRED
       },
       isString: {
-        errorMessage: 'Password must be a string!'
+        errorMessage: ApiResponseMessage.PASSWORD_MUST_BE_STRING
       },
       isLength: {
-        errorMessage: 'Password must be at least 6 chars long!',
-        options: { min: 6 }
+        errorMessage: ApiResponseMessage.PASSWORD_MUST_BE_AT_LEASE_X_CHARS_LONG,
+        options: { min: minPasswordLength }
       }
       //   isStrongPassword: {
       //     errorMessage: 'Password must be strong!'
@@ -43,7 +45,7 @@ export const userLoginValidator = requestValidator(
   checkSchema({
     email: {
       isEmail: {
-        errorMessage: 'Invalid email!'
+        errorMessage: ApiResponseMessage.INVALID_EMAIl
       },
       trim: true,
       custom: {
@@ -52,7 +54,7 @@ export const userLoginValidator = requestValidator(
 
           const user = await userServices.findUser(value, hpw)
           if (user === null) {
-            throw new Error('Email does not exist!')
+            throw new Error(ApiResponseMessage.EMAIL_OR_PASSWORD_INCORRECT)
           }
           req.user = user
           return true
@@ -61,10 +63,10 @@ export const userLoginValidator = requestValidator(
     },
     password: {
       notEmpty: {
-        errorMessage: 'Password is required!'
+        errorMessage: ApiResponseMessage.PASSWORD_IS_REQUIRED
       },
       isString: {
-        errorMessage: 'Password must be a string!'
+        errorMessage: ApiResponseMessage.PASSWORD_MUST_BE_STRING
       }
     }
   })
@@ -75,10 +77,10 @@ export const userAccessTokenValidator = requestValidator(
     {
       Authorization: {
         notEmpty: {
-          errorMessage: 'Access token is required!'
+          errorMessage: ApiResponseMessage.ACCESS_TOKEN_IS_REQUIRED
         },
         isString: {
-          errorMessage: 'Access token must be a string!'
+          errorMessage: ApiResponseMessage.ACCESS_TOKEN_MUST_BE_A_STRING
         },
         custom: {
           options: async (value: string, { req }) => {
@@ -101,35 +103,35 @@ export const userChangePasswordValidator = requestValidator(
   checkSchema({
     old_password: {
       notEmpty: {
-        errorMessage: 'Old password is required!'
+        errorMessage: ApiResponseMessage.OLD_PASSWORD_IS_REQUIRED
       },
       isString: {
-        errorMessage: 'Old password must be a string!'
+        errorMessage: ApiResponseMessage.OLD_PASSWORD_MUST_BE_STRING
       }
     },
     new_password: {
       notEmpty: {
-        errorMessage: 'New password is required!'
+        errorMessage: ApiResponseMessage.NEW_PASSWORD_IS_REQUIRED
       },
       isString: {
-        errorMessage: 'New password must be a string!'
+        errorMessage: ApiResponseMessage.NEW_PASSWORD_MUST_BE_STRING
       },
       isLength: {
-        errorMessage: 'New password must be at least 6 chars long!',
-        options: { min: 6 }
+        errorMessage: ApiResponseMessage.NEW_PASSWORD_MUST_BE_AT_LEAST_X_CHARS_LONG,
+        options: { min: minPasswordLength }
       }
     },
     confirm_new_password: {
       notEmpty: {
-        errorMessage: 'Confirm new password is required!'
+        errorMessage: ApiResponseMessage.CONFIRM_NEW_PASSWORD_IS_REQUIRED
       },
       isString: {
-        errorMessage: 'Confirm new password must be a string!'
+        errorMessage: ApiResponseMessage.CONFIRM_NEW_PASSWORD_MUST_BE_STRING
       },
       custom: {
         options: (value, { req }) => {
           if (value !== req.body.new_password) {
-            throw new Error('Confirm new password does not match new password!')
+            throw new Error(ApiResponseMessage.CONFIRM_NEW_PASSWORD_MUST_BE_SAME_AS_NEW_PASSWORD)
           }
           return true
         }

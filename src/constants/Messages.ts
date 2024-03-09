@@ -1,3 +1,4 @@
+export const minPasswordLength = 6
 export const ApiResponseMessage = {
   USER_NOT_FOUND: 'User not found',
   USER_ALREADY_EXISTS: 'User already exists',
@@ -5,5 +6,20 @@ export const ApiResponseMessage = {
   VIDEO_NOT_FOUND: 'Video not found',
   VIDEO_DELETED: 'Video deleted successfully',
   VIDEO_SHARED: 'Video shared successfully',
-  VIDEO_IS_NOT_YOURS: `You're not the owner of this video!`
+  VIDEO_IS_NOT_YOURS: `You're not the owner of this video!`,
+  EMAIL_OR_PASSWORD_INCORRECT: 'Email or password is incorrect!',
+  INVALID_EMAIl: 'Invalid email!',
+  PASSWORD_IS_REQUIRED: 'Password is required!',
+  PASSWORD_MUST_BE_STRING: 'Password must be a string!',
+  PASSWORD_MUST_BE_AT_LEASE_X_CHARS_LONG: `Password must be at least ${minPasswordLength} chars long!`,
+  ACCESS_TOKEN_IS_REQUIRED: 'Access token is required!',
+  ACCESS_TOKEN_MUST_BE_A_STRING: 'Access token must be a string!',
+  OLD_PASSWORD_IS_REQUIRED: 'Old password is required!',
+  OLD_PASSWORD_MUST_BE_STRING: 'Old password must be a string!',
+  NEW_PASSWORD_IS_REQUIRED: 'New password is required!',
+  NEW_PASSWORD_MUST_BE_STRING: 'New password must be a string!',
+  NEW_PASSWORD_MUST_BE_AT_LEAST_X_CHARS_LONG: `New password must be at least ${minPasswordLength} chars long!`,
+  CONFIRM_NEW_PASSWORD_IS_REQUIRED: 'Confirm new password is required!',
+  CONFIRM_NEW_PASSWORD_MUST_BE_STRING: 'Confirm new password must be a string!',
+  CONFIRM_NEW_PASSWORD_MUST_BE_SAME_AS_NEW_PASSWORD: 'Confirm new password must be same as new password!'
 }

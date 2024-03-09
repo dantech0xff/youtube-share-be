@@ -22,7 +22,7 @@ const usersRouter = Router()
  * Description: Register a new user
  * Method: POST
  * Path: /users/register
- * Body: { username: string, email: string, password: string }
+ * Body: { email: string, password: string }
  * Return: { data : { user_id: string, email: string, access_token: string }, message: string }
  */
 usersRouter.post('/register', userRegisterValidator, defaultRequestHandler(registerUserController))
