@@ -1,4 +1,5 @@
 import { checkSchema } from 'express-validator'
+import { ApiResponseMessage } from '~/constants/Messages'
 import videoService from '~/services/videos.service'
 import { requestValidator } from '~/utils/RequestValidator'
 
@@ -44,4 +45,37 @@ export const userShareVideoValidator = requestValidator(
     },
     ['body']
   )
+)
+
+export const getVideoListValidator = requestValidator(
+  checkSchema({
+    startIndex: {
+      optional: true,
+      isInt: {
+        errorMessage: ApiResponseMessage.START_INDEX_MUST_BE_A_NUMBER
+      },
+      custom: {
+        options: (value) => {
+          if (value < 0) {
+            throw new Error(ApiResponseMessage.START_INDEX_MUST_BE_GREATER_THAN_OR_EQUAL_TO_0)
+          }
+          return true
+        }
+      }
+    },
+    limit: {
+      optional: true,
+      isInt: {
+        errorMessage: ApiResponseMessage.LIMIT_MUST_BE_A_NUMBER
+      },
+      custom: {
+        options: (value) => {
+          if (value < 0) {
+            throw new Error(ApiResponseMessage.LIMIT_MUST_BE_GREATER_THAN_OR_EQUAL_TO_0)
+          }
+          return true
+        }
+      }
+    }
+  })
 )

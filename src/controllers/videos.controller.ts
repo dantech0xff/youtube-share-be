@@ -41,8 +41,6 @@ export const getListVideoOfUserController = async (req: any, res: any, next: any
   const user_id = req.params.user_id
   const startIndex = parseInt(req.query.startIndex as string) || 0
   const limit = parseInt(req.query.limit as string) || 10
-  //   const videos = await videoService.getVideosOfUser({ user_id: user_id, startIndex: startIndex, limit: limit })
-  //   const total = await videoService.getVideosOfUserCount(user_id)
   const [videos, total] = await Promise.all([
     videoService.getVideosOfUser({ user_id, startIndex, limit }),
     videoService.getVideosOfUserCount(user_id)

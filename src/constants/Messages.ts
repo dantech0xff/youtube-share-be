@@ -21,5 +21,9 @@ export const ApiResponseMessage = {
   NEW_PASSWORD_MUST_BE_AT_LEAST_X_CHARS_LONG: `New password must be at least ${minPasswordLength} chars long!`,
   CONFIRM_NEW_PASSWORD_IS_REQUIRED: 'Confirm new password is required!',
   CONFIRM_NEW_PASSWORD_MUST_BE_STRING: 'Confirm new password must be a string!',
-  CONFIRM_NEW_PASSWORD_MUST_BE_SAME_AS_NEW_PASSWORD: 'Confirm new password must be same as new password!'
+  CONFIRM_NEW_PASSWORD_MUST_BE_SAME_AS_NEW_PASSWORD: 'Confirm new password must be same as new password!',
+  START_INDEX_MUST_BE_GREATER_THAN_OR_EQUAL_TO_0: 'Start index must be greater than or equal to 0!',
+  START_INDEX_MUST_BE_A_NUMBER: 'Start index must be a number!',
+  LIMIT_MUST_BE_GREATER_THAN_OR_EQUAL_TO_0: 'Limit must be greater than or equal to 0!',
+  LIMIT_MUST_BE_A_NUMBER: 'Limit must be a number!'
 }

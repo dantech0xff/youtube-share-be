@@ -9,7 +9,7 @@ import {
   userUploadVideoController
 } from '~/controllers/videos.controller'
 import { userAccessTokenValidator } from '~/middlewares/users.middlewares'
-import { userShareVideoValidator } from '~/middlewares/videos.middlewares'
+import { getVideoListValidator, userShareVideoValidator } from '~/middlewares/videos.middlewares'
 import { defaultRequestHandler } from '~/utils/defaultRequestHandler'
 const videosRouter = Router()
 
@@ -44,7 +44,7 @@ videosRouter.get('/:video_id', defaultRequestHandler(getVideoInfoController))
  * Path: /videos
  * Query: { startIndex: number, limit: number }
  */
-videosRouter.get('/', defaultRequestHandler(getListVideoController))
+videosRouter.get('/', getVideoListValidator, defaultRequestHandler(getListVideoController))
 
 /**
  * Description: Get list of videos by user id
@@ -52,7 +52,7 @@ videosRouter.get('/', defaultRequestHandler(getListVideoController))
  * Path: /videos/user/:user_id
  * Query: { startIndex: number, limit: number }
  */
-videosRouter.get('/user/:user_id', defaultRequestHandler(getListVideoOfUserController))
+videosRouter.get('/user/:user_id', getVideoListValidator, defaultRequestHandler(getListVideoOfUserController))
 
 /**
  * Description: Up vote a video

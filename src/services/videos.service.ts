@@ -99,8 +99,8 @@ class VideoService {
     const videos = await databaseService.videos
       .find({ user_id: new ObjectId(input.user_id) })
       .sort({ create_at: -1 })
-      .skip(0)
-      .limit(10)
+      .skip(input.startIndex)
+      .limit(input.limit)
       .toArray()
     const videosInteraction = await this.getVideosInteraction(videos.map((video) => video._id.toHexString()))
     return videos.map((video) => {

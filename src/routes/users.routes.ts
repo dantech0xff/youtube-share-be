@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import { HTTP_CODES } from '~/constants/HTTP_CODES'
 import {
   changePasswordController,
   followUserByIdController,
@@ -45,7 +46,7 @@ usersRouter.post('/login', userLoginValidator, defaultRequestHandler(loginUserCo
  */
 usersRouter.post('/logout', userAccessTokenValidator, (req, res) => {
   // TODO: Implement logout later, now user want to logout? just delete their token from client side
-  res.status(200).json({ message: 'User logged out successfully!' })
+  res.status(HTTP_CODES.OK).json({ message: 'User logged out successfully!' })
 })
 
 /**
