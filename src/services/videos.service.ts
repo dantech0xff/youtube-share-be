@@ -16,11 +16,12 @@ class VideoService {
   }
 
   async deleteVideo(input: { video_id: string; user_id: string }) {
-    const deleteResult = await databaseService.videos.deleteOne({
-      _id: new ObjectId(input.video_id),
-      user_id: new ObjectId(input.user_id)
-    })
-    if (deleteResult.deletedCount === 0) {
+    const [deleteVideos, deleteInteractions] = await Promise.all([
+      databaseService.videos.deleteOne({ _id: new ObjectId(input.video_id), user_id: new ObjectId(input.user_id) }),
+      databaseService.interactions.deleteMany({ video_id: new ObjectId(input.video_id) })
+    ])
+
+    if (deleteVideos.deletedCount === 0) {
       return { message: ApiResponseMessage.VIDEO_IS_NOT_YOURS }
     }
     return { message: ApiResponseMessage.VIDEO_DELETED }
