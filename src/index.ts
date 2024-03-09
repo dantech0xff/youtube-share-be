@@ -4,7 +4,10 @@ import { appEnvConfig } from './constants/envConfig'
 import usersRouter from './routes/users.routes'
 import { HTTP_CODES } from './constants/HTTP_CODES'
 import videosRouter from './routes/videos.routes'
-const app = express()
+import helmet from 'helmet'
+import rateLimit from 'express-rate-limit'
+import { ApiResponseMessage } from './constants/Messages'
+import cors from 'cors'
 
 databaseService
   .connect()
@@ -12,9 +15,23 @@ databaseService
     databaseService.createIndexUsers()
   })
   .catch(console.error)
+
+const app = express()
 app.use(express.json())
+app.use(helmet())
+app.use(
+  rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    message: ApiResponseMessage.TOO_MANY_REQUESTS,
+    standardHeaders: true,
+    legacyHeaders: true
+  })
+)
+app.use(cors())
+
 app.get('/', (req, res) => {
-  res.send('Hello World!')
+  res.send('Hello RENEC!')
 })
 app.use('/users', usersRouter)
 app.use('/videos', videosRouter)
