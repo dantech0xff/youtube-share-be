@@ -30,5 +30,17 @@ export const ApiResponseMessage = {
   INTERACTED_WITH_VIDEO: 'Interacted with video successfully!',
   HANDLE_VIDEO_UP_VOTE_SUCCESSFULLY: 'Handle video up vote successfully!',
   HANDLE_VIDEO_DOWN_VOTE_SUCCESSFULLY: 'Handle video down vote successfully!',
-  LIST_OF_VIDEOS: 'List of videos'
+  LIST_OF_VIDEOS: 'List of videos',
+  UNFOLLOW_USER_SUCCESSFULLY: 'Unfollow user successfully!',
+  FOLLOW_USER_SUCCESSFULLY: 'Follow user successfully!',
+  USER_ALREADY_FOLLOWED: 'User already followed!',
+  USER_NOT_FOLLOWED: 'User not followed!',
+  CANNOT_UNFLLOW_YOURSELF: `You can't unfollow yourself!`,
+  CANNOT_FOLLOW_YOURSELF: `You can't follow yourself!`,
+  YOUR_PROVIDED_INFORMATION_IS_NOT_CORRECT: `Your provided information is not correct!`,
+  USER_REGISTERED: 'User registered successfully!',
+  USER_LOGGINED: 'User loggined successfully!',
+  MY_PROFILE: 'My Profile',
+  REQUEST_HANDLE_SUCCESSFULLY: 'Request handle successfully!',
+  PASSWORD_CHANGED_SUCCESSFULLY: 'Password changed successfully!'
 }

@@ -6,6 +6,7 @@ import { signToken } from '~/utils/jwt'
 import { appEnvConfig } from '~/constants/envConfig'
 import { ObjectId } from 'mongodb'
 import Follower from '~/models/db-schemas/Follower.schema'
+import { ApiResponseMessage } from '~/constants/Messages'
 class UserService {
   async registerUser(registerNewUserRequest: RegisterNewUserRequest) {
     const insertResult = await databaseService.users.insertOne(
@@ -37,13 +38,13 @@ class UserService {
       { _id: new ObjectId(input.user_id) },
       { $set: { password: input.hashPassword } }
     )
-    if (updateResult.matchedCount === 0) throw new Error('User not found!')
+    if (updateResult.matchedCount === 0) throw new Error(ApiResponseMessage.USER_NOT_FOUND)
     return { user_id: input.user_id }
   }
 
   async findUserWithId(user_id: string) {
     const findResult = await databaseService.users.findOne({ _id: new ObjectId(user_id) })
-    if (!findResult) throw new Error('User not found!')
+    if (!findResult) throw new Error(ApiResponseMessage.USER_NOT_FOUND)
     return {
       user_id: findResult._id,
       email: findResult.email,
@@ -70,7 +71,7 @@ class UserService {
     })
     let message = ''
     if (followerOfUserId) {
-      message = 'User already followed!'
+      message = ApiResponseMessage.USER_ALREADY_FOLLOWED
     } else {
       await databaseService.followers.insertOne(
         new Follower({
@@ -78,7 +79,7 @@ class UserService {
           follower_id: new ObjectId(input.follower_id)
         })
       )
-      message = 'Follow user successfully!'
+      message = ApiResponseMessage.FOLLOW_USER_SUCCESSFULLY
     }
     return { user_id: input.user_id, follower_id: input.follower_id, message }
   }
@@ -94,9 +95,9 @@ class UserService {
         user_id: new ObjectId(input.user_id),
         follower_id: new ObjectId(input.follower_id)
       })
-      message = 'Unfollow user successfully!'
+      message = ApiResponseMessage.UNFOLLOW_USER_SUCCESSFULLY
     } else {
-      message = 'User not followed before!'
+      message = ApiResponseMessage.USER_NOT_FOLLOWED
     }
     return { user_id: input.user_id, follower_id: input.follower_id, message }
   }
