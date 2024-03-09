@@ -21,6 +21,8 @@ dotenv.config({
 })
 
 export const appEnvConfig = {
+  isProduction: process.env.NODE_ENV === 'prod',
+  clientURL: process.env.CLIENT_URL as string,
   port: process.env.PORT,
   mongoDbUserName: process.env.MONGO_DB_USER_NAME,
   mongoDbUserPassword: process.env.MONGO_DB_USER_PASSWORD,

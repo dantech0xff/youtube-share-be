@@ -28,7 +28,11 @@ app.use(
     legacyHeaders: true
   })
 )
-app.use(cors())
+app.use(
+  cors({
+    origin: appEnvConfig.isProduction ? appEnvConfig.clientURL : '*'
+  })
+)
 
 app.get('/', (req, res) => {
   res.send('Hello RENEC!')
