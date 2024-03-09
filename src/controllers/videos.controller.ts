@@ -1,4 +1,5 @@
 import { HTTP_CODES } from '~/constants/HTTP_CODES'
+import { ApiResponseMessage } from '~/constants/Messages'
 import { InteractionActionType } from '~/models/db-schemas/Interaction.schema'
 import videoService from '~/services/videos.service'
 
@@ -11,7 +12,7 @@ export const userUploadVideoController = async (req: any, res: any, next: any) =
     title,
     description
   })
-  return res.status(HTTP_CODES.CREATED).json({ data, message: `Video uploaded successfully!` })
+  return res.status(HTTP_CODES.CREATED).json({ data, message: ApiResponseMessage.VIDEO_SHARED })
 }
 
 export const getVideoInfoController = async (req: any, res: any, next: any) => {
@@ -32,7 +33,7 @@ export const getListVideoController = async (req: any, res: any, next: any) => {
   const nextIndex = startIndex + videos.length
   const total = await videoService.getTotalVideosCount()
   const data = { videos, nextIndex, total }
-  return res.status(HTTP_CODES.OK).json({ data, message: 'List of videos' })
+  return res.status(HTTP_CODES.OK).json({ data, message: ApiResponseMessage.LIST_OF_VIDEOS })
 }
 
 export const getListVideoOfUserController = async (req: any, res: any, next: any) => {
@@ -54,14 +55,14 @@ export const userUpVoteVideoController = async (req: any, res: any, next: any) =
   const user_id = req.tokenPayload.user_id
   const video_id = req.body.video_id
   const data = await videoService.interactWithVideo({ user_id, video_id, action: InteractionActionType.UP_VOTE })
-  return res.status(HTTP_CODES.OK).json({ data, message: `Video upvoted successfully!` })
+  return res.status(HTTP_CODES.OK).json({ data, message: ApiResponseMessage.HANDLE_VIDEO_UP_VOTE_SUCCESSFULLY })
 }
 
 export const userDownVoteVideoController = async (req: any, res: any, next: any) => {
   const user_id = req.tokenPayload.user_id
   const video_id = req.body.video_id
   const data = await videoService.interactWithVideo({ user_id, video_id, action: InteractionActionType.DOWN_VOTE })
-  return res.status(HTTP_CODES.OK).json({ data, message: `Video downvoted successfully!` })
+  return res.status(HTTP_CODES.OK).json({ data, message: ApiResponseMessage.HANDLE_VIDEO_DOWN_VOTE_SUCCESSFULLY })
 }
 
 export const userDeleteVideoController = async (req: any, res: any, next: any) => {

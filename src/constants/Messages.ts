@@ -25,5 +25,10 @@ export const ApiResponseMessage = {
   START_INDEX_MUST_BE_GREATER_THAN_OR_EQUAL_TO_0: 'Start index must be greater than or equal to 0!',
   START_INDEX_MUST_BE_A_NUMBER: 'Start index must be a number!',
   LIMIT_MUST_BE_GREATER_THAN_OR_EQUAL_TO_0: 'Limit must be greater than or equal to 0!',
-  LIMIT_MUST_BE_A_NUMBER: 'Limit must be a number!'
+  LIMIT_MUST_BE_A_NUMBER: 'Limit must be a number!',
+  YOU_RE_ALREADY_INTERACTED_WITH_THIS_VIDEO: `You're already interacted with this video!`,
+  INTERACTED_WITH_VIDEO: 'Interacted with video successfully!',
+  HANDLE_VIDEO_UP_VOTE_SUCCESSFULLY: 'Handle video up vote successfully!',
+  HANDLE_VIDEO_DOWN_VOTE_SUCCESSFULLY: 'Handle video down vote successfully!',
+  LIST_OF_VIDEOS: 'List of videos'
 }

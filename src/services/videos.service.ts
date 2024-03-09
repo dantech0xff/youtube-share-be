@@ -131,6 +131,7 @@ class VideoService {
       user_id: new ObjectId(input.user_id),
       video_id: new ObjectId(input.video_id)
     })
+    let message = ApiResponseMessage.INTERACTED_WITH_VIDEO
     if (!interactedResult) {
       await databaseService.interactions.insertOne(
         new Interaction({
@@ -140,9 +141,14 @@ class VideoService {
         })
       )
     } else {
-      await databaseService.interactions.updateOne({ _id: interactedResult._id }, { $set: { action: input.action } })
+      if (interactedResult.action === input.action) {
+        message = ApiResponseMessage.YOU_RE_ALREADY_INTERACTED_WITH_THIS_VIDEO
+      } else {
+        await databaseService.interactions.updateOne({ _id: interactedResult._id }, { $set: { action: input.action } })
+      }
     }
-    return await this.getVideoInteraction(input.video_id)
+    const interactionResult = await this.getVideoInteraction(input.video_id)
+    return { ...interactionResult, message }
   }
 }
 
