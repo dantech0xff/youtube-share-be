@@ -1,6 +1,24 @@
 import dotenv from 'dotenv'
+import fs from 'fs'
+import path from 'path'
+const env = process.env.NODE_ENV
+if (!env) {
+  console.error('No NODE_ENV found!')
+  console.error('Please set NODE_ENV before running the app')
+  process.exit(1)
+}
 
-dotenv.config()
+const envFileName = `.env.${env}`
+console.log(`ENV_NODE = ${env}, now we're using '${envFileName}' to load Environment Variables!`)
+if (!fs.existsSync(path.resolve(envFileName))) {
+  console.error(`No ${envFileName} found!`)
+  console.error(`Please create ${envFileName} before running the app`)
+  process.exit(1)
+}
+
+dotenv.config({
+  path: envFileName
+})
 
 export const appEnvConfig = {
   port: process.env.PORT,
