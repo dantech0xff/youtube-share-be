@@ -8,8 +8,6 @@ import helmet from 'helmet'
 import rateLimit from 'express-rate-limit'
 import { ApiResponseMessage } from './constants/Messages'
 import cors from 'cors'
-import { createServer } from 'http'
-import { Server } from 'socket.io'
 import socketService from './socket/SocketService'
 
 databaseService
