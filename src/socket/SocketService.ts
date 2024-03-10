@@ -2,7 +2,7 @@ import { Server as HttpServer, createServer } from 'http'
 import { Socket, Server as SocketServer } from 'socket.io'
 import { ApiResponseMessage } from '~/constants/Messages'
 import { appEnvConfig } from '~/constants/envConfig'
-import { AppNotificationState } from '~/models/db-schemas/Notification.schema'
+import AppNotification, { AppNotificationState } from '~/models/db-schemas/Notification.schema'
 import Video from '~/models/db-schemas/Video.schema'
 import notificationsService from '~/services/notifications.service'
 import userServices from '~/services/users.service'
@@ -110,21 +110,27 @@ class SocketServiceImpl implements ISocketService {
   }
   async notifyNewVideoSharedByUserId(params: { data: Video }) {
     console.log('notifyNewVideoSharedByUserId', JSON.stringify(params))
+    const userInfo = await userServices.findUserWithId(params.data.user_id.toString())
+
     if (appEnvConfig.enableGlobalNotificationNewVideo) {
-      this.io.emit(NEW_NOTIFICATION_EVENT, params.data)
+      this.io.emit(NEW_NOTIFICATION_EVENT, {
+        to_user_id: 'you',
+        content: `New video shared by ${userInfo.email}`,
+        video: params.data
+      })
     } else {
       const user_id = params.data.user_id.toString()
       const listOfFollowers = await userServices.getListOfFollowersByUserId(user_id)
       for (const follower of listOfFollowers) {
-        const socketIds = this.onlineUsersMap.get(follower.toString())
         const notification = await notificationsService.insertNotificationToUser({
           to_user_id: follower.toString(),
           content: `New video shared by ${params.data.user_id}`,
           state: AppNotificationState.SENDING
         })
+        const socketIds = this.onlineUsersMap.get(follower.toString())
         if (socketIds && socketIds.size > 0) {
           for (const socketId of socketIds) {
-            this.io.to(socketId).emit(NEW_NOTIFICATION_EVENT, notification)
+            this.io.to(socketId).emit(NEW_NOTIFICATION_EVENT, { ...notification, video: params.data })
           }
         }
       }
