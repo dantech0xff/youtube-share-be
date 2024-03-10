@@ -110,7 +110,7 @@ class SocketServiceImpl implements ISocketService {
     this.httpServer?.listen(port, listeningListener)
   }
   async notifyNewVideoSharedByUserId(params: { data: Video }) {
-    console.log('notifyNewVideoSharedByUserId', JSON.stringify(params))
+    console.log('notifyNewVideoSharedByUserId', params)
     const userInfo = await userServices.findUserWithId(params.data.user_id.toString())
 
     if (appEnvConfig.enableGlobalNotificationNewVideo) {

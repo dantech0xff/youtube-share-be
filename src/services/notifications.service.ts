@@ -16,13 +16,14 @@ interface INotificationService {
 }
 
 class NotificationsService implements INotificationService {
-  async insertNotificationToUser(params: { to_user_id: string; content: string; state: string }) {
+  async insertNotificationToUser(params: { to_user_id: string; content: string; state: string; video: Video }) {
     const now = new Date()
     const insertObject = new AppNotification({
       to_user_id: new ObjectId(params.to_user_id),
       content: params.content,
       state: params.state,
-      create_at: now
+      create_at: now,
+      video: params.video
     })
     await databaseService.notifications.insertOne(insertObject)
     return insertObject
