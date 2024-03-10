@@ -31,5 +31,6 @@ export const appEnvConfig = {
   jwtAccessSecret: process.env.JWT_ACCESS_SECRET as string,
   jwtRefreshSecret: process.env.JWT_REFRESH_SECRET as string,
   jwtAccessExpireIn: process.env.JWT_ACCESS_EXPIRED_IN as string,
-  jwtRefreshExpire: process.env.JWT_REFRESH_EXPIRED_IN as string
+  jwtRefreshExpire: process.env.JWT_REFRESH_EXPIRED_IN as string,
+  enableGlobalNotificationNewVideo: process.env.ENABLE_GLOBAL_NOTIFICATION_NEW_VIDEO === 'true'
 }

@@ -34,7 +34,7 @@ class NotificationsService implements INotificationService {
     return await databaseService.notifications
       .find({
         to_user_id: new ObjectId(params.user_id),
-        state: { $in: [AppNotificationState.NOT_SEND, AppNotificationState.SENDING] }
+        state: { $in: [AppNotificationState.SENDING] }
       })
       .toArray()
   }

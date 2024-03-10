@@ -1,0 +1,806 @@
+{
+	"info": {
+		"_postman_id": "2f7bfe48-e077-40a4-8467-b489a011e7f9",
+		"name": "API YT-Share",
+		"description": "Please read the instruction in every API folder to understand how to use the APIs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16986835",
+		"_collection_link": "https://www.postman.com/avionics-explorer-24129344/workspace/postman-dev-workspace/collection/16986835-2f7bfe48-e077-40a4-8467-b489a011e7f9?action=share&source=collection_link&creator=16986835"
+	},
+	"item": [
+		{
+			"name": "User REST APIs",
+			"item": [
+				{
+					"name": "Register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"response must be with a valid body\", function () {",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"})",
+									"",
+									"var jsonResBody = JSON.parse(responseBody)",
+									"pm.environment.set(\"access_token\", \"Bearer \" + jsonResBody.data.access_token)",
+									"",
+									"var jsonReqBody = JSON.parse(pm.request.body)",
+									"pm.environment.set('email', jsonReqBody.email)",
+									"pm.environment.set('password', jsonReqBody.password)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\":\"{{$randomEmail}}\",\n    \"password\":\"{{$randomPassword}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/users/register",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"users",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"response must be with a valid body\", function () {",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"})",
+									"",
+									"var jsonResBody = JSON.parse(responseBody)",
+									"pm.environment.set(\"access_token\", \"Bearer \" + jsonResBody.data.access_token)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\":\"{{email}}\",\n    \"password\":\"{{password}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/users/login",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"response must be with a valid body\", function () {",
+									"    pm.response.to.be.ok;",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"})",
+									"",
+									"var jsonResBody = JSON.parse(responseBody)",
+									"pm.environment.set(\"access_token\", \"\")",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/users/logout",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"users",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Me",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"response must be with a valid body\", function () {",
+									"    pm.response.to.be.ok;",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"})",
+									"",
+									"var jsonResBody = JSON.parse(responseBody)",
+									"pm.environment.set(\"test_user_id\", jsonResBody.data.user_id)",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/users/me",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"users",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get By User Id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"response must be with a valid body\", function () {",
+									"    pm.response.to.be.ok;",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"})",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/users/:user_id",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"users",
+								":user_id"
+							],
+							"variable": [
+								{
+									"key": "user_id",
+									"value": "{{test_user_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Follow a UserId",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"response must be with a valid body\", function () {",
+									"    pm.response.to.be.ok;",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"})",
+									"",
+									"pm.test(\"check if the user_id is correct as expected\", function () {",
+									"    var jsonResBody = JSON.parse(responseBody)",
+									"    pm.expect(jsonResBody.data.user_id).to.eq(pm.environment.get('test_user_to_follow'))",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": \"{{test_user_to_follow}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/users/follow",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"users",
+								"follow"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UnFollow a UserId",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"response must be with a valid body\", function () {",
+									"    pm.response.to.be.ok;",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"})",
+									"",
+									"pm.test(\"check if the user_id is correct as expected\", function () {",
+									"    var jsonResBody = JSON.parse(responseBody)",
+									"    pm.expect(jsonResBody.data.user_id).to.eq(pm.environment.get('test_user_to_follow'))",
+									"",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": \"{{test_user_to_follow}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/users/unfollow",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"users",
+								"unfollow"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change Password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"response must be with a valid body\", function () {",
+									"    pm.response.to.be.ok;",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"})",
+									"",
+									"var jsonReqBody = JSON.parse(pm.request.body)",
+									"pm.environment.set('password', jsonReqBody.new_password)"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function generatePassword(length) {",
+									"    var result           = '';",
+									"    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    var charactersLength = characters.length;",
+									"    for ( var i = 0; i < length; i++ ) {",
+									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+									"    }",
+									"    return result;",
+									"}",
+									"pm.environment.set(\"random_new_password\", generatePassword(12));",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"old_password\":\"{{password}}\",\n    \"new_password\":\"{{random_new_password}}\",\n    \"confirm_new_password\":\"{{random_new_password}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/users/change-password",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"users",
+								"change-password"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "# Group of APIs that help you manage users.\n\nRead the instruction below to test the APIs\n\n## Register\n\nTo regist new user you can manual set your email, password in the body json or leave it default. I'll generate a pair of default email and password for you.\n\nWhen the response is returned from BE, the `email`, `password` and `access_token` will be automatically saved to `Env variables` (checkout the env Panel)\n\n<img src=\"https://content.pstmn.io/b8463f16-c139-4317-9529-7790e3d2ef92/U2NyZWVuc2hvdCAyMDI0LTAzLTA5IGF0IDE2LjQ5LjAwLnBuZw==\" width=\"1470\" height=\"1304\">\n\n## Login\n\nYou can test the Login api by clicking the send button, expected here if the server is running it will response a success response. Again I'll set the access_token to local env to make sure you can make other requests without manual input it.\n\n<img src=\"https://content.pstmn.io/1d581582-0557-440c-ab50-84eabf75e70f/U2NyZWVuc2hvdCAyMDI0LTAzLTA5IGF0IDE2LjUxLjA2LnBuZw==\" width=\"2562\" height=\"486\">\n\n## Logout\n\nSame with Login, I'll clear the access_token to mock the situation of Front End / Mobile when they hit the logout button\n\n<img src=\"https://content.pstmn.io/33494f66-217a-49da-ae81-82c310a052fd/U2NyZWVuc2hvdCAyMDI0LTAzLTA5IGF0IDE2LjUyLjIzLnBuZw==\" width=\"2556\" height=\"628\">\n\n## Me, Get By User Id\n\nThe two APIs that help user to get the information of themself or other user.\n\nIt's simple, you can test it easily\n\n## Follow, Unfollow a User Id\n\nThe two POST APIs that help user to follow or unfollow someone via `user_id`\n\n<img src=\"https://content.pstmn.io/0f70f34b-8a85-435c-a3ad-6374e2b47493/U2NyZWVuc2hvdCAyMDI0LTAzLTA5IGF0IDE2LjU1LjE0LnBuZw==\" width=\"2566\" height=\"416\">\n\n## Change Password"
+		},
+		{
+			"name": "Video",
+			"item": [
+				{
+					"name": "Share Video",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"response must be with a valid body\", function () {",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"})",
+									"",
+									"var jsonResBody = JSON.parse(responseBody)",
+									"pm.environment.set(\"current_video_id\", jsonResBody.data.video_id)"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const urls = [",
+									"    \"https://www.youtube.com/watch?v=F5u-1kGzMXU\",",
+									"    \"https://www.youtube.com/watch?v=Q0IGW8PZEks\",",
+									"    \"https://www.youtube.com/watch?v=WIqaWjTEo3g\",",
+									"    \"https://www.youtube.com/watch?v=iRg_Xx35FA0&list=RDiRg_Xx35FA0&start_radio=1&rv=LR13M7g__IM\",",
+									"    \"https://www.youtube.com/watch?v=jsabKs-TbN8&t=1s\",",
+									"    \"https://www.youtube.com/watch?v=h_1t3-6oWz4\",",
+									"    \"https://www.youtube.com/watch?v=iV8w19cFTLM\",",
+									"    \"https://www.youtube.com/watch?v=TN_vaXoQaL8\",",
+									"    \"https://www.youtube.com/watch?v=zoEtcR5EW08\",",
+									"    \"https://www.youtube.com/watch?v=IKtC5v5Lybk&list=RDIKtC5v5Lybk&start_radio=1&rv=LR13M7g__IM\"",
+									"]",
+									"",
+									"pm.environment.set(\"current_share_video_url\", urls[Math.floor((Math.random() * urls.length))]);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\":\"{{$randomJobTitle}}\",\n    \"url\":\"{{current_share_video_url}}\",\n    \"description\":\"{{$randomJobDescriptor}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/videos/share",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"videos",
+								"share"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Video Id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"response must be with a valid body\", function () {",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"    pm.response.to.be.ok;",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/videos/:video_id",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"videos",
+								":video_id"
+							],
+							"variable": [
+								{
+									"key": "video_id",
+									"value": "{{current_video_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Video List",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"response must be with a valid body\", function () {",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"    pm.response.to.be.ok;",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/videos/?startIndex=0&limit=01",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"videos",
+								""
+							],
+							"query": [
+								{
+									"key": "startIndex",
+									"value": "0"
+								},
+								{
+									"key": "limit",
+									"value": "01"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Video List Of User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"response must be with a valid body\", function () {",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"    pm.response.to.be.ok;",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/videos/user/:user_id?startIndex=0&limit=1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"videos",
+								"user",
+								":user_id"
+							],
+							"query": [
+								{
+									"key": "startIndex",
+									"value": "0"
+								},
+								{
+									"key": "limit",
+									"value": "1"
+								}
+							],
+							"variable": [
+								{
+									"key": "user_id",
+									"value": "{{test_user_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Up Vote a Video",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"response must be with a valid body\", function () {",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"    pm.response.to.be.ok;",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"video_id\":\"{{current_video_id}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/videos/up-vote",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"videos",
+								"up-vote"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Down Vote a Video",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"response must be with a valid body\", function () {",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"    pm.response.to.be.ok;",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"video_id\":\"{{current_video_id}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/videos/down-vote",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"videos",
+								"down-vote"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Video",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"response must be with a valid body\", function () {",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"    pm.response.to.be.ok;",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"video_id\":\"{{current_video_id}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/videos/delete",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"videos",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "# Group of APIs help you manage Videos that shared by User\n\n## Share Video\n\nI have set a list of videos to random share when you test the API. If want more? Just add more yourself. The access_token is auto saved by the step before, no need to manual add access_token\n\n<img src=\"https://content.pstmn.io/53ffefb9-aa7a-45be-8ab6-f7bad8a0ea1f/U2NyZWVuc2hvdCAyMDI0LTAzLTA5IGF0IDE3LjQ3LjAxLnBuZw==\" width=\"2552\" height=\"724\">\n\n## Get Video Id\n\nTo get the Information of a Video via its Id. The `video_id` is passed from the step Share Video, if you want to customize your API call, can change the field to get other values.\n\n<img src=\"https://content.pstmn.io/e5b45dac-cf58-4265-af65-46703064ca49/U2NyZWVuc2hvdCAyMDI0LTAzLTA5IGF0IDE3LjQ4LjQ2LnBuZw==\" width=\"2554\" height=\"662\">\n\n## Get Video List, Get Video List of User\n\nThe API to get the list Videos in general or a specific `user_id`, default sorted by `create_at`\n\nThese 2 APIs should include with the param `startIndex` and `limit` to enable FE/Mobile can get the list with a specific range they want. Also easy to support infinite scroll.\n\n#### `Drawback: Data not sync yet. In some case of deletion or share Video, data may get wrong. Need improve more.`\n\n<img src=\"https://content.pstmn.io/9073837e-54a0-410b-9433-89948731848e/U2NyZWVuc2hvdCAyMDI0LTAzLTA5IGF0IDE3LjUwLjQ1LnBuZw==\" width=\"2576\" height=\"768\">\n\n## Up Vote, Down Vote a Video\n\nThese 2 APIs, help user can do action Up vote or Down vote a Video. 1 by 1.\n\n### **Fact**: Users are not able to have both Up Vote and Down Vote for a Video at same time.\n\n<img src=\"https://content.pstmn.io/b77ae148-3db3-4b09-a2ce-61e55a3b1e2e/U2NyZWVuc2hvdCAyMDI0LTAzLTA5IGF0IDE3LjU1LjQyLnBuZw==\" width=\"2588\" height=\"980\">\n\n## Delete Video\n\nAPI help user to delete 1 video with `video_id`\n\n> Fact: When deleting the Video, all the related information with it should be deleted too. For example: Interaction information \n  \n<img src=\"https://content.pstmn.io/e05a44e4-522d-409a-88c4-0e31bbecb4ed/U2NyZWVuc2hvdCAyMDI0LTAzLTA5IGF0IDE3LjU5LjAwLnBuZw==\" alt=\"\" height=\"840\" width=\"2578\">"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://farming-simulator.pstmn.io"
+		}
+	]
+}

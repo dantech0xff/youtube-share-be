@@ -1,9 +1,8 @@
 import { ObjectId } from 'mongodb'
 
 export enum AppNotificationState {
-  NOT_SEND = 'not_send',
   SENDING = 'sending',
-  SENT = 'sent',
+  RECEIVED = 'received',
   READ = 'read'
 }
 
@@ -20,6 +19,6 @@ export default class AppNotification {
     this.to_user_id = obj.to_user_id
     this.content = obj.content
     this.create_at = obj.create_at || now
-    this.state = obj.state || AppNotificationState.NOT_SEND
+    this.state = obj.state || AppNotificationState.SENDING
   }
 }

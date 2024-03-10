@@ -61,7 +61,7 @@ class SocketServiceImpl implements ISocketService {
       socket.on(RECEIVE_NOTIFICATION_EVENT, (notification_id: string) => {
         notificationsService.updateNotificationStateById({
           notification_id,
-          state: AppNotificationState.SENT
+          state: AppNotificationState.RECEIVED
         })
       })
       socket.on(READ_NOTIFICATION_EVENT, (notification_id: string) => {
@@ -110,26 +110,23 @@ class SocketServiceImpl implements ISocketService {
   }
   async notifyNewVideoSharedByUserId(params: { data: Video }) {
     console.log('notifyNewVideoSharedByUserId', JSON.stringify(params))
-    const user_id = params.data.user_id.toString()
-    const listOfFollowers = await userServices.getListOfFollowersByUserId(user_id)
-
-    for (const follower of listOfFollowers) {
-      const socketIds = this.onlineUsersMap.get(follower.toString())
-      if (socketIds && socketIds.size > 0) {
-        const noti = await notificationsService.insertNotificationToUser({
+    if (appEnvConfig.enableGlobalNotificationNewVideo) {
+      this.io.emit(NEW_NOTIFICATION_EVENT, params.data)
+    } else {
+      const user_id = params.data.user_id.toString()
+      const listOfFollowers = await userServices.getListOfFollowersByUserId(user_id)
+      for (const follower of listOfFollowers) {
+        const socketIds = this.onlineUsersMap.get(follower.toString())
+        const notification = await notificationsService.insertNotificationToUser({
           to_user_id: follower.toString(),
           content: `New video shared by ${params.data.user_id}`,
           state: AppNotificationState.SENDING
         })
-        for (const socketId of socketIds) {
-          this.io.to(socketId).emit(NEW_NOTIFICATION_EVENT, noti)
+        if (socketIds && socketIds.size > 0) {
+          for (const socketId of socketIds) {
+            this.io.to(socketId).emit(NEW_NOTIFICATION_EVENT, notification)
+          }
         }
-      } else {
-        notificationsService.insertNotificationToUser({
-          to_user_id: follower.toString(),
-          content: `New video shared by ${params.data.user_id}`,
-          state: AppNotificationState.NOT_SEND
-        })
       }
     }
   }
