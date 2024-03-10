@@ -9,8 +9,8 @@ import userServices from '~/services/users.service'
 import { verifyToken } from '~/utils/jwt'
 
 const NEW_NOTIFICATION_EVENT = 'new-notification'
-const READ_NOTIFICATION_EVENT = 'read-notification'
 const RECEIVE_NOTIFICATION_EVENT = 'receive-notification'
+const READ_NOTIFICATION_EVENT = 'read-notification'
 
 interface ISocketService {
   initSocket(express: any): void
@@ -43,9 +43,7 @@ class SocketServiceImpl implements ISocketService {
       } else {
         this.onlineUsersMap.set(user_id, new Set([socketId]))
       }
-      console.log(`a user connected  ${tokenPayload.user_id} ${this.onlineUsersMap.size}`)
-
-      console.log('onlineUsersMap', this.onlineUsersMap)
+      console.log(`a user connected  ${tokenPayload.user_id}, `, this.onlineUsersMap)
 
       socket.on('disconnect', () => {
         const socketIds = this.onlineUsersMap.get(user_id)
@@ -59,23 +57,26 @@ class SocketServiceImpl implements ISocketService {
       })
 
       socket.on(RECEIVE_NOTIFICATION_EVENT, (notification_id: string) => {
+        console.log('RECEIVE_NOTIFICATION_EVENT', notification_id)
         notificationsService.updateNotificationStateById({
           notification_id,
           state: AppNotificationState.RECEIVED
         })
       })
       socket.on(READ_NOTIFICATION_EVENT, (notification_id: string) => {
+        console.log('READ_NOTIFICATION_EVENT', notification_id)
         notificationsService.updateNotificationStateById({
           notification_id,
           state: AppNotificationState.READ
         })
       })
 
-      const listSendingAndNotSendNotifications = await notificationsService.findNotReceivedNotificationsByUserId({
+      // TODO: async this
+      const listUnReadNotifications = await notificationsService.findUnReadNotificationsByUserId({
         user_id: socket.handshake.auth.tokenPayload.user_id
       })
-      for (const notification of listSendingAndNotSendNotifications) {
-        socket.emit(NEW_NOTIFICATION_EVENT, notification)
+      for (const notification of listUnReadNotifications) {
+        socket.emit(NEW_NOTIFICATION_EVENT, { ...notification })
       }
     })
 
@@ -124,13 +125,14 @@ class SocketServiceImpl implements ISocketService {
       for (const follower of listOfFollowers) {
         const notification = await notificationsService.insertNotificationToUser({
           to_user_id: follower.toString(),
-          content: `New video shared by ${params.data.user_id}`,
-          state: AppNotificationState.SENDING
+          content: `New video shared by ${userInfo.email}`,
+          state: AppNotificationState.SENDING,
+          video: params.data
         })
         const socketIds = this.onlineUsersMap.get(follower.toString())
         if (socketIds && socketIds.size > 0) {
           for (const socketId of socketIds) {
-            this.io.to(socketId).emit(NEW_NOTIFICATION_EVENT, { ...notification, video: params.data })
+            this.io.to(socketId).emit(NEW_NOTIFICATION_EVENT, { ...notification })
           }
         }
       }

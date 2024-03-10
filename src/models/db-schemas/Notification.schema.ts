@@ -1,4 +1,5 @@
 import { ObjectId } from 'mongodb'
+import Video from './Video.schema'
 
 export enum AppNotificationState {
   SENDING = 'sending',
@@ -12,6 +13,7 @@ export default class AppNotification {
   content: string
   create_at: Date
   state: string
+  video?: Video
 
   constructor(obj: any) {
     const now = new Date()
@@ -20,5 +22,6 @@ export default class AppNotification {
     this.content = obj.content
     this.create_at = obj.create_at || now
     this.state = obj.state || AppNotificationState.SENDING
+    this.video = obj.video || null
   }
 }
