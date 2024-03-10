@@ -268,7 +268,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"user_id\": \"{{test_user_to_follow}}\"\n}",
+							"raw": "{\n    \"user_id\": \"{{test_user_to_be_followed_id}}\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -775,6 +775,529 @@
 				}
 			],
 			"description": "# Group of APIs help you manage Videos that shared by User\n\n## Share Video\n\nI have set a list of videos to random share when you test the API. If want more? Just add more yourself. The access_token is auto saved by the step before, no need to manual add access_token\n\n<img src=\"https://content.pstmn.io/53ffefb9-aa7a-45be-8ab6-f7bad8a0ea1f/U2NyZWVuc2hvdCAyMDI0LTAzLTA5IGF0IDE3LjQ3LjAxLnBuZw==\" width=\"2552\" height=\"724\">\n\n## Get Video Id\n\nTo get the Information of a Video via its Id. The `video_id` is passed from the step Share Video, if you want to customize your API call, can change the field to get other values.\n\n<img src=\"https://content.pstmn.io/e5b45dac-cf58-4265-af65-46703064ca49/U2NyZWVuc2hvdCAyMDI0LTAzLTA5IGF0IDE3LjQ4LjQ2LnBuZw==\" width=\"2554\" height=\"662\">\n\n## Get Video List, Get Video List of User\n\nThe API to get the list Videos in general or a specific `user_id`, default sorted by `create_at`\n\nThese 2 APIs should include with the param `startIndex` and `limit` to enable FE/Mobile can get the list with a specific range they want. Also easy to support infinite scroll.\n\n#### `Drawback: Data not sync yet. In some case of deletion or share Video, data may get wrong. Need improve more.`\n\n<img src=\"https://content.pstmn.io/9073837e-54a0-410b-9433-89948731848e/U2NyZWVuc2hvdCAyMDI0LTAzLTA5IGF0IDE3LjUwLjQ1LnBuZw==\" width=\"2576\" height=\"768\">\n\n## Up Vote, Down Vote a Video\n\nThese 2 APIs, help user can do action Up vote or Down vote a Video. 1 by 1.\n\n### **Fact**: Users are not able to have both Up Vote and Down Vote for a Video at same time.\n\n<img src=\"https://content.pstmn.io/b77ae148-3db3-4b09-a2ce-61e55a3b1e2e/U2NyZWVuc2hvdCAyMDI0LTAzLTA5IGF0IDE3LjU1LjQyLnBuZw==\" width=\"2588\" height=\"980\">\n\n## Delete Video\n\nAPI help user to delete 1 video with `video_id`\n\n> Fact: When deleting the Video, all the related information with it should be deleted too. For example: Interaction information \n  \n<img src=\"https://content.pstmn.io/e05a44e4-522d-409a-88c4-0e31bbecb4ed/U2NyZWVuc2hvdCAyMDI0LTAzLTA5IGF0IDE3LjU5LjAwLnBuZw==\" alt=\"\" height=\"840\" width=\"2578\">"
+		},
+		{
+			"name": "Prepare Test Follower",
+			"item": [
+				{
+					"name": "Follower 1",
+					"item": [
+						{
+							"name": "Register Follower 1",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response must be with a valid body\", function () {",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"})",
+											"",
+											"var jsonResBody = JSON.parse(responseBody)",
+											"pm.environment.set(\"access_token_follower_1\", \"Bearer \" + jsonResBody.data.access_token)",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\":\"{{$randomEmail}}\",\n    \"password\":\"{{$randomPassword}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/users/register",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"users",
+										"register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Follower 1 - Follows Test User Id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response must be with a valid body\", function () {",
+											"    pm.response.to.be.ok;",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"})",
+											"",
+											"pm.test(\"check if the user_id is correct as expected\", function () {",
+											"    var jsonResBody = JSON.parse(responseBody)",
+											"    pm.expect(jsonResBody.data.user_id).to.eq(pm.environment.get('test_user_to_follow'))",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{access_token_follower_1}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"user_id\": \"{{test_user_to_be_followed_id}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/users/follow",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"users",
+										"follow"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Follower 1 - UnFollow Test User Id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response must be with a valid body\", function () {",
+											"    pm.response.to.be.ok;",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"})",
+											"",
+											"pm.test(\"check if the user_id is correct as expected\", function () {",
+											"    var jsonResBody = JSON.parse(responseBody)",
+											"    pm.expect(jsonResBody.data.user_id).to.eq(pm.environment.get('test_user_to_follow'))",
+											"",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{access_token_follower_1}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"user_id\": \"{{test_user_to_be_followed_id}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/users/unfollow",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"users",
+										"unfollow"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Follower 2",
+					"item": [
+						{
+							"name": "Register Follower 2",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response must be with a valid body\", function () {",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"})",
+											"",
+											"var jsonResBody = JSON.parse(responseBody)",
+											"pm.environment.set(\"access_token_follower_2\", \"Bearer \" + jsonResBody.data.access_token)"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\":\"{{$randomEmail}}\",\n    \"password\":\"{{$randomPassword}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/users/register",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"users",
+										"register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Follower 2 - Follows Test User Id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response must be with a valid body\", function () {",
+											"    pm.response.to.be.ok;",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"})",
+											"",
+											"pm.test(\"check if the user_id is correct as expected\", function () {",
+											"    var jsonResBody = JSON.parse(responseBody)",
+											"    pm.expect(jsonResBody.data.user_id).to.eq(pm.environment.get('test_user_to_follow'))",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{access_token_follower_2}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"user_id\": \"{{test_user_to_be_followed_id}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/users/follow",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"users",
+										"follow"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Follower 2 - UnFollow Test User Id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response must be with a valid body\", function () {",
+											"    pm.response.to.be.ok;",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"})",
+											"",
+											"pm.test(\"check if the user_id is correct as expected\", function () {",
+											"    var jsonResBody = JSON.parse(responseBody)",
+											"    pm.expect(jsonResBody.data.user_id).to.eq(pm.environment.get('test_user_to_follow'))",
+											"",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{access_token_follower_2}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"user_id\": \"{{test_user_to_be_followed_id}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/users/unfollow",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"users",
+										"unfollow"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Follower 3",
+					"item": [
+						{
+							"name": "Register Follower 3",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response must be with a valid body\", function () {",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"})",
+											"",
+											"var jsonResBody = JSON.parse(responseBody)",
+											"pm.environment.set(\"access_token_follower_3\", \"Bearer \" + jsonResBody.data.access_token)"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\":\"{{$randomEmail}}\",\n    \"password\":\"{{$randomPassword}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/users/register",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"users",
+										"register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Follower 3 - Follows Test User Id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response must be with a valid body\", function () {",
+											"    pm.response.to.be.ok;",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"})",
+											"",
+											"pm.test(\"check if the user_id is correct as expected\", function () {",
+											"    var jsonResBody = JSON.parse(responseBody)",
+											"    pm.expect(jsonResBody.data.user_id).to.eq(pm.environment.get('test_user_to_follow'))",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{access_token_follower_3}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"user_id\": \"{{test_user_to_be_followed_id}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/users/follow",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"users",
+										"follow"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Follower 3 - UnFollow Test User Id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response must be with a valid body\", function () {",
+											"    pm.response.to.be.ok;",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"})",
+											"",
+											"pm.test(\"check if the user_id is correct as expected\", function () {",
+											"    var jsonResBody = JSON.parse(responseBody)",
+											"    pm.expect(jsonResBody.data.user_id).to.eq(pm.environment.get('test_user_to_follow'))",
+											"",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{access_token_follower_3}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"user_id\": \"{{test_user_to_be_followed_id}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/users/unfollow",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"users",
+										"unfollow"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Register User To Be Followed",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"response must be with a valid body\", function () {",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"})",
+									"",
+									"var jsonResBody = JSON.parse(responseBody)",
+									"pm.environment.set(\"access_token\", \"Bearer \" + jsonResBody.data.access_token)",
+									"pm.environment.set(\"test_user_to_be_followed_id\", jsonResBody.data.user_id)",
+									"",
+									"var jsonReqBody = JSON.parse(pm.request.body)",
+									"pm.environment.set('email', jsonReqBody.email)",
+									"pm.environment.set('password', jsonReqBody.password)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\":\"{{$randomEmail}}\",\n    \"password\":\"{{$randomPassword}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/users/register",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"users",
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"event": [
