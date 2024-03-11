@@ -1,5 +1,6 @@
 import { userChangePasswordValidator, userRegisterValidator } from '~/middlewares/users.middlewares'
 import userServices from '~/services/users.service'
+
 jest.mock('~/services/users.service', () => {
   return {
     userServices: {},
