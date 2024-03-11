@@ -9,6 +9,9 @@ module.exports = {
       },
       env_prod: {
         NODE_ENV: 'prod'
+      },
+      env_prod_gcp: {
+        NODE_ENV: 'prod_gcp'
       }
     }
   ]
