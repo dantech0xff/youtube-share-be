@@ -15,11 +15,15 @@ jest.mock('~/services/users.service', () => {
     registerUser: jest.fn(),
     signUserAccessToken: jest.fn(),
     findUserWithId: jest.fn(),
-    unFollowUserById: jest.fn()
+    unFollowUserById: jest.fn(),
+    followUserById: jest.fn(),
+    findUserByIdPassword: jest.fn(),
+    updateUserPasswordById: jest.fn()
   }
 })
 import userServices from '~/services/users.service'
 import { ApiResponseMessage } from '~/constants/Messages'
+import { hashPassword } from '~/utils/cryptography'
 
 describe('Users Controller', () => {
   describe('registerUserController', () => {
@@ -193,6 +197,92 @@ describe('Users Controller', () => {
         message: ApiResponseMessage.CANNOT_UNFLLOW_YOURSELF
       })
       expect(mockRes.status).toHaveBeenCalledWith(400)
+    })
+  })
+
+  describe('followUserByIdController', () => {
+    it('should follow a user by id', async () => {
+      const mockReq: any = {
+        body: {
+          user_id: 'abcid'
+        },
+        tokenPayload: {
+          user_id: 'defid'
+        }
+      }
+      const mockRes: any = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn()
+      }
+      const mockNext: any = jest.fn()
+      const followResult = (userServices.followUserById as jest.Mock).mockResolvedValue({
+        follower_id: 'defid',
+        user_id: 'abcid'
+      })
+      await followUserByIdController(mockReq, mockRes, mockNext)
+      expect(mockRes.json).toHaveBeenCalledWith({
+        data: {
+          follower_id: 'defid',
+          user_id: 'abcid'
+        },
+        message: ApiResponseMessage.REQUEST_HANDLE_SUCCESSFULLY
+      })
+      expect(mockRes.status).toHaveBeenCalledWith(200)
+    })
+
+    it('should user is not able to follow themself', async () => {
+      const mockReq: any = {
+        body: {
+          user_id: 'abcid'
+        },
+        tokenPayload: {
+          user_id: 'abcid'
+        }
+      }
+      const mockRes: any = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn()
+      }
+      const mockNext: any = jest.fn()
+      await followUserByIdController(mockReq, mockRes, mockNext)
+      expect(mockRes.json).toHaveBeenCalledWith({
+        data: {},
+        message: ApiResponseMessage.CANNOT_FOLLOW_YOURSELF
+      })
+      expect(mockRes.status).toHaveBeenCalledWith(400)
+    })
+  })
+
+  describe('changePasswordController', () => {
+    it('should change password', async () => {
+      const mockReq: any = {
+        tokenPayload: {
+          user_id: 'abcid'
+        },
+        body: {
+          old_password: 'oldpassword',
+          new_password: 'newpassword'
+        }
+      }
+      const mockRes: any = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn()
+      }
+      const mockNext: any = jest.fn()
+      const findUserByIdResult = (userServices.findUserByIdPassword as jest.Mock).mockResolvedValue({})
+      const updatePasswordResult = (userServices.updateUserPasswordById as jest.Mock).mockResolvedValue({
+        user_id: 'abcid',
+        hashPassword: hashPassword('newpassword')
+      })
+      await changePasswordController(mockReq, mockRes, mockNext)
+      expect(mockRes.json).toHaveBeenCalledWith({
+        data: {
+          user_id: 'abcid',
+          hashPassword: hashPassword('newpassword')
+        },
+        message: ApiResponseMessage.PASSWORD_CHANGED_SUCCESSFULLY
+      })
+      expect(mockRes.status).toHaveBeenCalledWith(200)
     })
   })
 })
