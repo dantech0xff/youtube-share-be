@@ -36,7 +36,13 @@
 					],
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"email\":\"{{$randomEmail}}\",\n    \"password\":\"{{$randomPassword}}\"\n}",
@@ -80,7 +86,13 @@
 					],
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"email\":\"{{email}}\",\n    \"password\":\"{{password}}\"\n}",
@@ -1298,6 +1310,23 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "{{host}}",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/ip",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"ip"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [
