@@ -3,6 +3,7 @@ import Video from '~/models/db-schemas/Video.schema'
 import databaseService from './database.service'
 import Interaction, { InteractionActionType } from '~/models/db-schemas/Interaction.schema'
 import { ApiResponseMessage } from '~/constants/Messages'
+import userServices from './users.service'
 
 class VideoService {
   async uploadVideo(input: { user_id: string; url: string; title: string; description: string }) {
@@ -86,7 +87,23 @@ class VideoService {
       .skip(input.startIndex)
       .limit(input.limit)
       .toArray()
-    return videos
+    const userIdMapToEmail: Map<string, string> = await userServices.getListOfUsersEmailByIds(
+      videos.map((video) => video.user_id.toHexString())
+    )
+    return videos.map((video) => {
+      const video_id = video._id.toHexString()
+      return {
+        id: video_id,
+        user_id: video.user_id,
+        url: video.url,
+        title: video.title,
+        description: video.description,
+        views: video.views,
+        create_at: video.create_at,
+        update_at: video.update_at,
+        email: userIdMapToEmail?.get(video.user_id.toHexString())
+      }
+    })
   }
   async getTotalVideosCount() {
     return await databaseService.videos.countDocuments()
@@ -99,11 +116,25 @@ class VideoService {
       .skip(input.startIndex)
       .limit(input.limit)
       .toArray()
-    const videosInteraction = await this.getVideosInteraction(videos.map((video) => video._id.toHexString()))
+    // const videosInteraction = await this.getVideosInteraction(videos.map((video) => video._id.toHexString()))
+    // const userInfo = await userServices.findUserWithId(input.user_id)
+    const [videosInteraction, userInfo] = await Promise.all([
+      this.getVideosInteraction(videos.map((video) => video._id.toHexString())),
+      userServices.findUserWithId(input.user_id)
+    ])
+    // const [videos, videoInteractions] = await Promise.all([
+    //   databaseService.videos
+    //     .find({ user_id: new ObjectId(input.user_id) })
+    //     .sort({ create_at: -1 })
+    //     .skip(input.startIndex)
+    //     .limit(input.limit)
+    //     .toArray(),
+    //   this.getVideosInteraction(videos.map((video) => video._id.toHexString()))
+    // ])
     return videos.map((video) => {
       const video_id = video._id.toHexString()
       return {
-        video_id,
+        id: video_id,
         user_id: video.user_id,
         url: video.url,
         title: video.title,
@@ -111,7 +142,8 @@ class VideoService {
         views: video.views,
         create_at: video.create_at,
         update_at: video.update_at,
-        ...(videosInteraction[video_id] || { up_vote: 0, down_vote: 0 })
+        ...(videosInteraction[video_id] || { up_vote: 0, down_vote: 0 }),
+        email: userInfo.email
       }
     })
   }

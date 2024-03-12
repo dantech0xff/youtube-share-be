@@ -117,6 +117,14 @@ class UserService {
     })
     return Boolean(followerOfUserId)
   }
+  async getListOfUsersEmailByIds(user_ids: string[]) {
+    const users = await databaseService.users.find({ _id: { $in: user_ids.map((id) => new ObjectId(id)) } }).toArray()
+    const map = new Map()
+    for (const user of users) {
+      map.set(user._id.toString(), user.email)
+    }
+    return map
+  }
 }
 
 const userServices = new UserService()
