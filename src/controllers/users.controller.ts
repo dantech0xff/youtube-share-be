@@ -22,14 +22,23 @@ export const loginUserController = async (req: any, res: any, next: any) => {
 
 export const getMyProfileController = async (req: any, res: any, next: any) => {
   const tokenPayload = req.tokenPayload
-  tokenPayload.user_id
   const data = await userServices.findUserWithId(tokenPayload.user_id.toString())
-  return res.status(HTTP_CODES.OK).json({ data, message: ApiResponseMessage.MY_PROFILE })
+  const followable = 0
+  return res.status(HTTP_CODES.OK).json({ data: { ...data, followable }, message: ApiResponseMessage.MY_PROFILE })
 }
 
 export const getUserProfileByIdController = async (req: any, res: any, next: any) => {
-  const data = await userServices.findUserWithId(req.params.user_id)
-  return res.status(HTTP_CODES.OK).json({ data, message: `User profile by id ${req.params.user_id}` })
+  const [data, isFollowed] = await Promise.all([
+    userServices.findUserWithId(req.params.user_id),
+    userServices.checkIsUserFollowedByFollowerId({
+      user_id: req.params.user_id,
+      follower_id: req.tokenPayload.user_id
+    })
+  ])
+  const followable = req.tokenPayload.user_id === req.params.user_id ? 0 : isFollowed ? -1 : 1
+  return res
+    .status(HTTP_CODES.OK)
+    .json({ data: { ...data, followable }, message: `User profile by id ${req.params.user_id}` })
 }
 
 export const followUserByIdController = async (req: any, res: any, next: any) => {

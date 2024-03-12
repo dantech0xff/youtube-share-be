@@ -109,6 +109,14 @@ class UserService {
       .toArray()
     return followers
   }
+
+  async checkIsUserFollowedByFollowerId(input: { user_id: string; follower_id: string }) {
+    const followerOfUserId = await databaseService.followers.findOne({
+      user_id: new ObjectId(input.user_id),
+      follower_id: new ObjectId(input.follower_id)
+    })
+    return Boolean(followerOfUserId)
+  }
 }
 
 const userServices = new UserService()

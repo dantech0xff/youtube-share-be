@@ -18,7 +18,8 @@ jest.mock('~/services/users.service', () => {
     unFollowUserById: jest.fn(),
     followUserById: jest.fn(),
     findUserByIdPassword: jest.fn(),
-    updateUserPasswordById: jest.fn()
+    updateUserPasswordById: jest.fn(),
+    checkIsUserFollowedByFollowerId: jest.fn()
   }
 })
 import userServices from '~/services/users.service'
@@ -112,7 +113,8 @@ describe('Users Controller', () => {
           email: 'testemail@outlook.test',
           username: 'testuser',
           create_at: now,
-          update_at: now
+          update_at: now,
+          followable: 0
         },
         message: ApiResponseMessage.MY_PROFILE
       })
@@ -124,6 +126,9 @@ describe('Users Controller', () => {
       const mockReq: any = {
         params: {
           user_id: 'abcid'
+        },
+        tokenPayload: {
+          user_id: 'defid'
         }
       }
       const mockRes: any = {
@@ -136,12 +141,14 @@ describe('Users Controller', () => {
         user_id: 'abcid',
         email: 'myemail@live.dev'
       })
+      const isFollowed = (userServices.checkIsUserFollowedByFollowerId as jest.Mock).mockResolvedValue(false)
       const result = await getUserProfileByIdController(mockReq, mockRes, mockNext)
       expect(mockRes.status).toHaveBeenCalledWith(200)
       expect(mockRes.json).toHaveBeenCalledWith({
         data: {
           user_id: 'abcid',
-          email: 'myemail@live.dev'
+          email: 'myemail@live.dev',
+          followable: 1
         },
         message: `User profile by id abcid`
       })
